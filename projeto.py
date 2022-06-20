@@ -35,7 +35,7 @@ def cadastra():
 
 # exibir tabelas presentes em um banco 
 def listar():
-	print('listar tabela de medicos')
+	print('TABELA DE ME')
 
 	mydb = conectar()
 	
@@ -50,7 +50,7 @@ def listar():
 		
 	mycursor.close()
 	mydb.close()
-  # tentar fazer sozinha
+  
   
 #uptade
 def alterar():
@@ -95,7 +95,7 @@ def apagar():
 # SEGUNDA TABELA
 # tabela de especialidade
 def cadastra_especialidades():
-	print('cadastra especialidade')
+	print(' CADASTRA ESPECIALIDADES ')
 	nome = input("Digite o Nome da especialidade: ")
 	
 	mydb = conectar()
@@ -113,7 +113,7 @@ def cadastra_especialidades():
 	print(mycursor.rowcount, "foi adicionado a especialidade.")
 
 def listar_especialidades():
-	print('tabela de especialidades')
+	print(' TABELA DE ESPECIALIDADES ')
 
 	mydb = conectar()
 	
@@ -170,18 +170,27 @@ def apagar_especialidades():
 # TABELA de Medicos_Tem_Especialidades
 def medicos_tem_especialidades():
 	print(" id, medico e sua especialidade")
-	id_medico = input("Digite o id do medico: ")
-	id_especialidade = input("Digite o id da especialidade: ")
+	#id_medico = input("Digite o id do medico: ")
+	#id_especialidade = input("Digite o id da especialidade: ")
 		
 	mydb = conectar()
 	
 	mycursor = mydb.cursor() 
-	  
-	mycursor.execute("SELECT* FROM medicos_tem_especialidades;") 
-	  
-	myresult = mycursor.fetchall() 
-	for x in myresult: 
-		print(x)
+	
+
+	sql = "SELECT \
+	users.name AS user, \
+	products.name AS favorite \
+	FROM users \
+	LEFT JOIN especialidades ON users.fav = products.id"
+
+	mycursor.execute(sql)
+
+	myresult = mycursor.fetchall()
+
+	for x in myresult:
+	  print(x)
+
 		
 	mycursor.close()
 	mydb.close()
@@ -235,4 +244,21 @@ while True:
 		print('sair')
 		break
 		
+print("""
+while True:
+	print(' escolha uma das duas opções')
+	menu =input(" tabelas")
+	if menu =='1':
+		menu()
+	if menu =='2':
+		listar()
+	if menu =='3':
+		listar_especialidades()
+	elif menu =='4':
+		print(" saindo...\n")
+		break
+	else:
+		print('\n erro, opção invalida')
+		
+""")
 
