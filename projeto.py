@@ -1,5 +1,6 @@
 # PRIMEIRA TABELA !!
-# iserir dados na tabela
+# tabela de Medicos
+# iserir, Listar, Alterar e apagar
 
 import mysql.connector
 def conectar():
@@ -13,7 +14,7 @@ def conectar():
 	
 def cadastra():
 
-	nome = input("Digite o Nome: ")
+	nome = input(" Digite o Nome do Medico a ser cadastrado: ")
 	email = input("Digite o E-mail: ")
 	
 	mydb = conectar()
@@ -34,7 +35,7 @@ def cadastra():
 
 # exibir tabelas presentes em um banco 
 def listar():
-	print('listar')
+	print('listar tabela de medicos')
 
 	mydb = conectar()
 	
@@ -43,9 +44,9 @@ def listar():
 	mycursor.execute("SELECT * FROM medicos;") 
 	  
 	myresult = mycursor.fetchall() 
-	print('{:^8}/{:^11}/{:^10}'.format('ID', 'NOME','E-MAIL'))	
+	print('{:^8}|{:^11}|{:^10}'.format('ID', 'NOME','E-MAIL'))	
 	for (id, nome, email) in myresult: 
-		print('{:^8}/{:^10}/{:^10}'.format(id, nome, email))
+		print('{:^8}|{:^11}|{:^10}'.format(id, nome, email))
 		
 	mycursor.close()
 	mydb.close()
@@ -74,7 +75,7 @@ def alterar():
 
 # deletar
 def apagar():
-	print('apagar')
+	print(' selecione o id que sera excluido!')
 	id = int(input(' digite um id: '))
 	
 	mydb = conectar()
@@ -91,8 +92,8 @@ def apagar():
 
 	print(mycursor.rowcount, "record(s) deleted")
 	
-# A PARTI DAQUI SERA A 2 TABELA
-
+# SEGUNDA TABELA
+# tabela de especialidade
 def cadastra_especialidades():
 	print('cadastra especialidade')
 	nome = input("Digite o Nome da especialidade: ")
@@ -111,7 +112,7 @@ def cadastra_especialidades():
 
 	print(mycursor.rowcount, "foi adicionado a especialidade.")
 
-def listar_especialidade():
+def listar_especialidades():
 	print('tabela de especialidades')
 
 	mydb = conectar()
@@ -121,13 +122,52 @@ def listar_especialidade():
 	mycursor.execute("SELECT * FROM especialidades;") 
 	  
 	myresult = mycursor.fetchall() 
-	print('{:^8}/{:^11}'.format('ID', 'NOME'))	
+	print('{:^8}|{:^11}'.format('ID', 'NOME'))	
 	for (id, nome) in myresult: 
-		print('{:^8}/{:^10}'.format(id, nome))
+		print('{:^8}|{:^11}'.format(id, nome))
 		
 	mycursor.close()
 	mydb.close()
 	
+def alterar_especialidades():
+	print('alterar as informaçoes de especialidades')
+	id = int(input(' digite um id: '))
+	nome = input("digite o nome da especialidade: ")
+	
+	
+	mydb = conectar()
+
+	mycursor = mydb.cursor()
+
+	sql = "UPDATE especialidades SET nome = %s WHERE id = %s"
+	val = (nome, id)
+	mycursor.execute(sql,val)
+
+	mydb.commit()
+	mycursor.close()
+	mydb.close()
+
+	print(mycursor.rowcount, "record(s) affected")
+def apagar_especialidades():
+	print('selecione o id que sera excluido!')
+	id = int(input(' digite um id: '))
+	
+	mydb = conectar()
+
+	mycursor = mydb.cursor()
+
+	sql = "DELETE FROM especialidades WHERE id = %s"
+	val = (id,)
+	mycursor.execute(sql,val)
+
+	mydb.commit()
+	mycursor.close()
+	mydb.close()
+
+	print(mycursor.rowcount, "record(s) deleted")
+	
+# TERCEIRA TABELA
+# TABELA de Medicos_Tem_Especialidades
 def medicos_tem_especialidades():
 	print(" id, medico e sua especialidade")
 	id_medico = input("Digite o id do medico: ")
@@ -150,19 +190,30 @@ def medicos_tem_especialidades():
 # menu de opções	
 while True:
 	print( 'menu de opções' """
+	( TABELA de MEDICOS )
+	
 	1) cadastra
 	2) listar
 	3) alterar
 	4) apagar
+	
+	( TABELA de ESPECIALIDADES )
+	
 	5) cadastra_especialidades 
-	6) listar_especialidade
-	7) especialidades que o medico tem
-	8)sair
+	6) listar_especialidades
+	7) alterar_especialidades
+	8) apagar_especialidades
+	
+	( TERCEIRA TABELA )
+	9) especialidades que o medico tem
+	
+	( SAINDO DO SISTEMA )
+	10)sair
 	""")
-	print("Digite uma das opções acima ")
+	print("Digite uma das opções acima: ")
 	opcao = input(": ")
 
-	if opcao == '1':
+	if opcao == '1': 
 		cadastra()
 	elif opcao =='2':
 		listar()
@@ -173,10 +224,14 @@ while True:
 	elif opcao =='5':
 		cadastra_especialidades()
 	elif opcao=='6':
-		listar_especialidade()
-	elif opcao =='7':
-		medicos_tem_especialidades()
+		listar_especialidades()
+	elif opcao=='7':
+		alterar_especialidades()
 	elif opcao =='8':
+		apagar_especialidades()
+	elif opcao =='9':
+		medicos_tem_especialidades()
+	elif opcao =='10':
 		print('sair')
 		break
 		
