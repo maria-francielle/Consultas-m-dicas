@@ -1,6 +1,5 @@
 # PRIMEIRA TABELA !!
 # tabela de Medicos
-# iserir, Listar, Alterar e apagar
 
 import mysql.connector
 def conectar():
@@ -33,9 +32,9 @@ def cadastra():
 	print(mycursor.rowcount, "cadastro adicionado.")
 
 
-# exibir tabelas presentes em um banco 
+
 def listar():
-	print('TABELA DE ME')
+	print('TABELA DE MEDICO')
 
 	mydb = conectar()
 	
@@ -50,9 +49,8 @@ def listar():
 		
 	mycursor.close()
 	mydb.close()
-  
-  
-#uptade
+    
+
 def alterar():
 	print('alterar as informaçoes')
 	id = int(input(' digite um id: '))
@@ -73,7 +71,6 @@ def alterar():
 
 	print(mycursor.rowcount, "record(s) affected")
 
-# deletar
 def apagar():
 	print(' selecione o id que sera excluido!')
 	id = int(input(' digite um id: '))
@@ -148,6 +145,7 @@ def alterar_especialidades():
 	mydb.close()
 
 	print(mycursor.rowcount, "record(s) affected")
+	
 def apagar_especialidades():
 	print('selecione o id que sera excluido!')
 	id = int(input(' digite um id: '))
@@ -167,61 +165,85 @@ def apagar_especialidades():
 	print(mycursor.rowcount, "record(s) deleted")
 	
 # TERCEIRA TABELA
-# TABELA de Medicos_Tem_Especialidades
-def medicos_tem_especialidades():
-	print(" id, medico e sua especialidade")
-	#id_medico = input("Digite o id do medico: ")
-	#id_especialidade = input("Digite o id da especialidade: ")
-		
+# TABELA de Medicos_Tem_Especialidades (ME)
+def cadastra_me():
+	print(' CADASTRA NOME do ID_medico e ID_ESPECIALIDADES ')
+	listar()
+	id_medico = input("Digite o ID do MEDICO: ")
+	listar_especialidades()
+	id_especialidade = input("Digite o ID da ESPECIALIDADE: ")
+	
+	mydb = conectar()
+
+	mycursor = mydb.cursor()
+
+	
+	sql = "INSERT INTO medicos_tem_especialidades (id_medico, id_especialidade) VALUES (%s, %s)"
+	val = (id_medico, id_especialidade)
+	mycursor.execute(sql, val)
+
+	mydb.commit()
+	mycursor.close()
+	mydb.close()
+
+	print(mycursor.rowcount, "foi adicionado O MEDICO e ESPECIALIDADE.")
+	
+def listar_me():
+	print(' LISTANDO AS DUAS TABELAS')
+
 	mydb = conectar()
 	
 	mycursor = mydb.cursor() 
-	
-
-	sql = "SELECT \
-	users.name AS user, \
-	products.name AS favorite \
-	FROM users \
-	LEFT JOIN especialidades ON users.fav = products.id"
-
-	mycursor.execute(sql)
-
-	myresult = mycursor.fetchall()
-
-	for x in myresult:
-	  print(x)
-
+	  
+	mycursor.execute("SELECT medicos.nome, especialidades.nome from medicos JOIN medicos_tem_especialidades ON medicos.id = medicos_tem_especialidades.id_medico JOIN especialidades on especialidades.id = medicos_tem_especialidades.id_especialidade ") 
+	  
+	myresult = mycursor.fetchall() 
+	print('{:^8}|{:^11}'.format('medico', 'especialidade'))	
+	for medico, especialidade in myresult: 
+		print('{:^8}|{:^11}'.format(medico, especialidade))
+		
 		
 	mycursor.close()
 	mydb.close()
 
-#comando de repetição
-# menu de opções	
+#Comando de Repetição
+# Menu de opções
 while True:
-	print( 'menu de opções' """
-	( TABELA de MEDICOS )
+	print("""
 	
-	1) cadastra
-	2) listar
-	3) alterar
-	4) apagar
+	===========	MENU ================== 
+
+			[M] - MEDICOS
+			[E] - ESPECIALIDADES
+			[S] - Sair
+		
+			TABELA de MEDICOS: 
+		
+			[1] - cadastra
+			[2] - listar
+			[3] - alterar
+			[4] - apagar
+			
+			TABELA de ESPECIALIDADES: 
 	
-	( TABELA de ESPECIALIDADES )
-	
-	5) cadastra_especialidades 
-	6) listar_especialidades
-	7) alterar_especialidades
-	8) apagar_especialidades
-	
-	( TERCEIRA TABELA )
-	9) especialidades que o medico tem
-	
-	( SAINDO DO SISTEMA )
-	10)sair
+			[5] - cadastra_especialidades 
+			[6] - listar_especialidades
+			[7] - alterar_especialidades
+			[8] - apagar_especialidades
+		
+			TERCEIRA TABELA:
+			
+			[9] - cadastra id medico e id especialidade
+			[10] - listar as especialidade e medico
+			
+			SAINDO DO SISTEMA:
+			
+			[10] - sair
 	""")
 	print("Digite uma das opções acima: ")
 	opcao = input(": ")
-
+	if opcao =='0':
+		menu()
 	if opcao == '1': 
 		cadastra()
 	elif opcao =='2':
@@ -239,26 +261,9 @@ while True:
 	elif opcao =='8':
 		apagar_especialidades()
 	elif opcao =='9':
-		medicos_tem_especialidades()
+		cadastra_me()
 	elif opcao =='10':
+		listar_me()
+	elif opcao =='11':
 		print('sair')
 		break
-		
-print("""
-while True:
-	print(' escolha uma das duas opções')
-	menu =input(" tabelas")
-	if menu =='1':
-		menu()
-	if menu =='2':
-		listar()
-	if menu =='3':
-		listar_especialidades()
-	elif menu =='4':
-		print(" saindo...\n")
-		break
-	else:
-		print('\n erro, opção invalida')
-		
-""")
-
